@@ -18,6 +18,7 @@ e.g., Wiener Filtering, trained U-net, and so on. Easy for starters to get famil
 # Getting Started
 Download this repo using `gh repo clone daydreamerovo/face_recognition_and_privacy_perserving` or download as a zip file.
 
+## Get Your Baseline
 Run `python train.py` in the terminal to get a baseline for face detection, the best result's weight will be stored in the checkpoints file. If you want to change the backbone for training, simply use `python train.py --backbone vit` or `python train.py --backbone resnet`. The default backbone model is Resnet18.
 
 # Prerequisites
