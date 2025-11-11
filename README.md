@@ -1,4 +1,4 @@
-(TO BE FURNISHED)
+ (Still Updating)
 
 # Face-Landmark Detection and Privacy-Preserving Implementation Using Pytorch
 This repo implements a five-landmark detection based on UKTFace (cropped, aligned), including nose, eyes, and mouth, with *Resnet18* and *ViT* as backbones for comparison,
