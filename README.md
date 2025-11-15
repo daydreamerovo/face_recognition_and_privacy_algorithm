@@ -24,9 +24,9 @@ Run `python train.py` in the terminal to get a baseline for face detection, the 
 ## Add Noise to Images in the Frequency Domain and Evaluate
 Run `python run_protect.py` to add noise to the original images. You can change the noise mode by adding `--mode gaussian` for adding gaussian noise, Poisson and Salt Pepper noises are supported. Sigma, Amount, and radius are hyperparameters controlling how much noise is added and how much of the low-frequency part is kept. 
 
-Run `python eval_noise.py` to get the NME of baseline models on those noise-added images. 
+Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --data-root ../data --modes gaussian salt_pepper poisson` to overwrite the file paths in the CSV file and point them to specific noisy image paths. Remember to check paths in the file, and change them into your own local path, e.g., the data path may in /project/data/ or something.
 
-
+Run `python eval_noise.py  --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/resnet18/best_model.pth --backbone resnet18 --batch-size 64` to get the NME of baseline models on those noise-added images. Change backbone or meta-path to noisy CSV paths like `--meta-path data/landmarks_dataset_gaussian.csv` to evaluate other modes.
 
 # Prerequisites
 Download the prerequisites using `pip install -r requirements.txt`.
