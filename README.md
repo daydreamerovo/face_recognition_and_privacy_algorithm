@@ -28,6 +28,7 @@ Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --da
 
 Run `python eval_noise.py  --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/resnet18/best_model.pth --backbone resnet18 --batch-size 64` to get the NME of baseline models on those noise-added images. Change backbone or meta-path to noisy CSV paths like `--meta-path data/landmarks_dataset_gaussian.csv` to evaluate other modes.
 
+Test on basline if trained with LoRA: `python eval_noise.py --meta-path data/landmarks_dataset_gaussian.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --batch-size 64 --use-lora --lora-adapter checkpoints/vit/lora`
 # Prerequisites
 Download the prerequisites using `pip install -r requirements.txt`.
 
