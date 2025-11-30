@@ -26,7 +26,25 @@ If you don't want to use lora: `python train.py --backbone vit --epochs 30 --bat
 ## Add Noise to Images in the Frequency Domain and Evaluate
 
 ### Add Noise
-Run `python run_protect.py` to add noise to the original images. You can change the noise mode by adding `--mode gaussian` for adding gaussian noise, Poisson and Salt Pepper noises are supported. Sigma, Amount, and radius are hyperparameters controlling how much noise is added and how much of the low-frequency part is kept. 
+Run `python utils/add_noise.py --modes gaussian salt_pepper poisson --test` to get a test result for different noise modes. Remember to add `-- src_root + "your dataset's file path"` to add noise to your own dataset. An example:<img width="1767" height="400" alt="example" src="https://github.com/user-attachments/assets/fbf8ce78-d9b9-4196-b323-5132dc21822d" />
+
+Change those hyperparameters as you want, and here are some hints:
+
+**--radius**: Low-pass filter radius (unit: pixels); the smaller it is, the fewer frequencies are retained, and the image becomes blurrier.
+
+**--sigma**: Frequency-domain Gaussian multiplicative noise coefficient (used in Gauss mode); adjust between 0.2 to 1, the larger it is, the more intense the colour texture.
+
+**--photon-lambda**: 'Photon count' λ for Poisson noise; the smaller it is, the stronger the noise. Default 40 corresponds to mild graininess, which  can be lowered to 10 or 5 to enhance the effect.
+
+**--salt-amount / --salt-ratio**: Density and salt-to-pepper ratio of spatial-domain salt-and-pepper noise (effective only in salt_pepper mode). salt_amount=0.05 means 5% of pixels are affected, salt_ratio=0.5 means half bright/half dark.
+
+**--phase-sigma**: Brightness phase perturbation strength; 0 means no phase change, 0.05~0.1 slightly blurs the structure.
+
+**--seed**: Random seed; when fixed, the noise is consistent every time. Omit to use the default 42.
+
+**--test**: Does not save files in batch; randomly selects one image to show original/low-pass/various noises for easier parameter tuning.
+
+
 
 ### Create separate CSV files for different noise modes
 Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --data-root ../data --modes gaussian salt_pepper poisson` to overwrite the file paths in the CSV file and point them to specific noisy image paths. Remember to check paths in the file, and change them into your own local path, e.g., the data path may in /project/data/ or something.
