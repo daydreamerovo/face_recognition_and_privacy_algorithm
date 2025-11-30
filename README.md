@@ -1,9 +1,9 @@
-<img width="997" height="80" alt="image" src="https://github.com/user-attachments/assets/af5bbbf5-b334-4dfa-9ee8-96c9ff786f42" /> (Still Updating)
+(Still Updating)
 
 # Face-Landmark Detection and Privacy-Preserving Implementation Using Pytorch
 This repo implements a five-landmark detection based on UKTFace (cropped, aligned), including nose, eyes, and mouth, with *Resnet18* and *ViT* as backbones for comparison,
-Both are fine-tuned using LoRA adapter, and the effect of adding noise to images via FFT is discussed, followed by different methods to "Attack" the model. 
-e.g., Wiener Filtering, trained U-net, and so on. Easy for starters to get familiar with face recognition algorithms and implementations.
+Both are fine-tuned using LoRA adapter, and the effect of adding noises (Gaussian, salt-pepper, Poisson) to images via FFT is discussed, followed by different methods to "Attack" the model. 
+e.g., trained U-net, and so on. Easy for starters to get familiar with face recognition algorithms and implementations. The goal is to prevent attackers from stealing directly and easily from noisy images but quite recognisable to human eyes.
 
 
 ## Table of Contents
@@ -24,9 +24,22 @@ Run `python train.py --backbone vit --epochs 30 --batch_size 32 --lr 1e-4 --use_
 
 If you don't want to use lora: `python train.py --backbone vit --epochs 30 --batch_size 32 --lr 1e-4`.
 
-## Add Noise to Images in the Frequency Domain and Evaluate
+# Prerequisites
+Download the prerequisites using `pip install -r requirements.txt`.
 
-### Add Noise
+versions of modules I used:
+**Python**: 3.9
+**PyTorch**: 12.8; all tasks run on my RTX5060 Laptop.
+
+# Installation
+If `conda install -c conda-forge dlib` does not work for **dlib** installation, you have to install **Visual Studio tools for builders** and click **C++ for desktop** when installing. Then, using` pip install Cmake` to install Cmake; finally, use `pip install dlib`. 
+
+Remember to operate under your created environments if you were using one!!!
+
+**_dlib_** installation issue's solution for Chinese users: [Click here](https://blog.csdn.net/weixin_58961374/article/details/126970461).
+
+# Usage
+## Add Noise
 Run `python utils/add_noise.py --modes gaussian salt_pepper poisson --test` to get a test result for different noise modes. Remember to add `-- src_root + "your dataset's file path"` to add noise to your own dataset. An example:<img width="1767" height="400" alt="example" src="https://github.com/user-attachments/assets/fbf8ce78-d9b9-4196-b323-5132dc21822d" />
 
 Change those hyperparameters as you want, and here are some hints:
@@ -47,10 +60,10 @@ Change those hyperparameters as you want, and here are some hints:
 
 After you are satisfied with your tests, run `python utils/add_noise.py --src-root ""your data path --data-root D:/Tencent_facial/data --modes gaussian salt_pepper poisson` to add noise.
 
-### Create separate CSV files for different noise modes
+## Create separate CSV files for different noise modes
 Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --data-root ../data --modes gaussian salt_pepper poisson` to overwrite the file paths in the CSV file and point them to specific noisy image paths. Remember to check paths in the file, and change them into your own local path, e.g., the data path may be in /project/data/ or something.
 
-### Evaluate Baseline Models' Performance under different Noisy Conditions
+## Evaluate Baseline Models' Performance under different Noisy Conditions
 Test on baseline if trained with LoRA: `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --batch-size 64 --use-lora --lora-adapter checkpoints/vit/lora`.
 Change evaluation on a different noise mode: change meta-path into  `data/landmarks_dataset_gaussiansalt_pepper/poisson.csv`, change backbone: `--backbone vit/resnet18`.
 An example of tests run using ViT:
@@ -59,18 +72,12 @@ An example of tests run using ViT:
 If you want to see pred vs. GT on one certain picture, run `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --preview-image 35_0_0_20170117170519707.jpg.chip.jpg --preview-metas data/landmarks_dataset_gaussian.csv data/landmarks_dataset_salt_pepper.csv data/landmarks_dataset_poisson.csv  --preview-only`
 
 
-### Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
+## Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
 `python attack_model.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_gaussian.csv --epochs 30 --batch-size 16`
-# Prerequisites
-Download the prerequisites using `pip install -r requirements.txt`.
 
-versions of modules I used:
-**Python**: 3.9
-**PyTorch**: 12.8; all tasks run on my RTX5060 Laptop.
+`python attack_eval.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_gaussian.csv --attack-ckpt attack_checkpoints/Unet_epoch30.pth --landmark-ckpt checkpoints/resnet18/best_model.pth --save-dir runs/attack_eval_gaussian`
+<img width="2400" height="800" alt="triplets" src="https://github.com/user-attachments/assets/ac0f946c-d346-43a4-81f0-28af099b43e7" />
 
-# Installation
-If `conda install -c conda-forge dlib` does not work for **dlib** installation, you have to install **Visual Studio tools for builders** and click **C++ for desktop** when installing. Then, using` pip install Cmake` to install Cmake; finally, use `pip install dlib`. 
 
-Remember to operate under your created environments if you were using one!!!
-
-**_dlib_** installation issue's solution for Chinese users: [Click here](https://blog.csdn.net/weixin_58961374/article/details/126970461).
+# Contact
+If you have any questions or any suggestions for this repo, please don't hesitate to contact me via: **yipeng003@e.ntu.edu.sg**, I will do my best to help :).
