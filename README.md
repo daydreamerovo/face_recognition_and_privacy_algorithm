@@ -44,10 +44,10 @@ Change those hyperparameters as you want, and here are some hints:
 
 **--test**: Does not save files in batch; randomly selects one image to show original/low-pass/various noises for easier parameter tuning.
 
-
+After you are satisfied with your tests, run `python utils/add_noise.py --src-root ""your data path --data-root D:/Tencent_facial/data --modes gaussian salt_pepper poisson` to add noise.
 
 ### Create separate CSV files for different noise modes
-Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --data-root ../data --modes gaussian salt_pepper poisson` to overwrite the file paths in the CSV file and point them to specific noisy image paths. Remember to check paths in the file, and change them into your own local path, e.g., the data path may in /project/data/ or something.
+Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --data-root ../data --modes gaussian salt_pepper poisson` to overwrite the file paths in the CSV file and point them to specific noisy image paths. Remember to check paths in the file, and change them into your own local path, e.g., the data path may be in /project/data/ or something.
 
 ### Evaluate Baseline Models' Performance under different Noisy Conditions
 Test on baseline if trained with LoRA: `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --batch-size 64 --use-lora --lora-adapter checkpoints/vit/lora`.
