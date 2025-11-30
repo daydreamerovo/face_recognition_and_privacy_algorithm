@@ -1,4 +1,4 @@
- (Still Updating)
+<img width="997" height="80" alt="image" src="https://github.com/user-attachments/assets/af5bbbf5-b334-4dfa-9ee8-96c9ff786f42" /> (Still Updating)
 
 # Face-Landmark Detection and Privacy-Preserving Implementation Using Pytorch
 This repo implements a five-landmark detection based on UKTFace (cropped, aligned), including nose, eyes, and mouth, with *Resnet18* and *ViT* as backbones for comparison,
@@ -57,6 +57,10 @@ An example of tests run using ViT:
 <img width="1600" height="511" alt="compare" src="https://github.com/user-attachments/assets/18daf5e5-7579-46a6-9e01-7020903a164b" />
 
 If you want to see pred vs. GT on one certain picture, run `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --preview-image 35_0_0_20170117170519707.jpg.chip.jpg --preview-metas data/landmarks_dataset_gaussian.csv data/landmarks_dataset_salt_pepper.csv data/landmarks_dataset_poisson.csv  --preview-only`
+
+
+### Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
+`python attack_model.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_gaussian.csv --epochs 30 --batch-size 16`
 # Prerequisites
 Download the prerequisites using `pip install -r requirements.txt`.
 
