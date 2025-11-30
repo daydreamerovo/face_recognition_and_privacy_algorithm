@@ -5,6 +5,7 @@ This repo implements a five-landmark detection based on UKTFace (cropped, aligne
 Both are fine-tuned using LoRA adapter, and the effect of adding noise to images via FFT is discussed, followed by different methods to "Attack" the model. 
 e.g., Wiener Filtering, trained U-net, and so on. Easy for starters to get familiar with face recognition algorithms and implementations.
 
+
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
@@ -52,7 +53,10 @@ Run `python utils/update_noise_csv.py --src-csv data/landmarks_dataset.csv  --da
 ### Evaluate Baseline Models' Performance under different Noisy Conditions
 Test on baseline if trained with LoRA: `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --batch-size 64 --use-lora --lora-adapter checkpoints/vit/lora`.
 Change evaluation on a different noise mode: change meta-path into  `data/landmarks_dataset_gaussiansalt_pepper/poisson.csv`, change backbone: `--backbone vit/resnet18`.
+An example of tests run using ViT:
+<img width="1600" height="511" alt="compare" src="https://github.com/user-attachments/assets/18daf5e5-7579-46a6-9e01-7020903a164b" />
 
+If you want to see pred vs. GT on one certain picture, run `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --preview-image 35_0_0_20170117170519707.jpg.chip.jpg --preview-metas data/landmarks_dataset_gaussian.csv data/landmarks_dataset_salt_pepper.csv data/landmarks_dataset_poisson.csv  --preview-only`
 # Prerequisites
 Download the prerequisites using `pip install -r requirements.txt`.
 
