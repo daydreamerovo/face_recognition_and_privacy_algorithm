@@ -12,6 +12,7 @@ import numpy as np
 from tqdm import tqdm
 from dataset import UTKFaceDataset
 import torch.nn.functional as F
+
 # model
 class UnetBlock(nn.Module):
     def __init__(self, in_ch, out_ch, down=True, act='relu', use_dropout=False):
@@ -109,20 +110,30 @@ class PairedNoiseDataset(Dataset):
 
 
 # ----------------------------Training---------------------------------
+def resolve_save_dir(args):
+    base = Path(args.save_dir)
+    if args.noise_tag:
+        return base / args.noise_tag
+    noisy_name = Path(args.noisy_csv).stem
+    return base / noisy_name
+
+
 def train(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dataset = PairedNoiseDataset(args.clean_csv, args.noisy_csv, imgsize=args.imgsize)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
 
-    model =Unet().to(device)
+    model = Unet().to(device)
     criterion = nn.L1Loss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    os.makedirs(args.save_dir, exist_ok=True)
+    save_dir = resolve_save_dir(args)
+    os.makedirs(save_dir, exist_ok=True)
 
     for epoch in range(args.epochs):
         model.train()
-        pbar = tqdm(loader, desc=f'Epoch {epoch+1}/{args.epochs}')
+        pbar = tqdm(loader,
+        desc=f'Epoch {epoch+1}/{args.epochs}')
         epoch_loss = 0
         for noisy, clean in pbar:
             noisy, clean = noisy.to(device), clean.to(device)
@@ -135,7 +146,7 @@ def train(args):
             epoch_loss += loss.item()
             pbar.set_postfix({'loss':f'{loss.item():.4f}'})
         print(f'Epoch{epoch+1}/{args.epochs}: Loss={epoch_loss/len(loader):.4f}')
-        torch.save(model.state_dict(), os.path.join(args.save_dir, f'Unet_epoch{epoch+1}.pth'))
+        torch.save(model.state_dict(), save_dir / f'Unet_epoch{epoch+1}.pth')
 
     # save sample comparsions
     model.eval()
@@ -144,9 +155,9 @@ def train(args):
     with torch.no_grad():
         recon = model(noisy).cpu()
     
-    save_image(clean, os.path.join(args.save_dir, 'sample_clean.png'))
-    save_image(noisy.cpu(), os.path.join(args.save_dir, 'sample_noisy.png'))
-    save_image(recon, os.path.join(args.save_dir, 'sample_recon.png'))
+    save_image(clean, save_dir / 'sample_clean.png')
+    save_image(noisy.cpu(), save_dir / 'sample_noisy.png')
+    save_image(recon, save_dir / 'sample_recon.png')
 
 
 
@@ -159,7 +170,8 @@ def parse_args():
     parser.add_argument('--epochs', type=int, default=30)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--batch-size', type=int, default=16)
-    parser.add_argument('--save-dir', type=str, default='attack_checkpoints')
+    parser.add_argument('--save-dir', type=str, default='attack_checkpoints', help='root directory to store checkpoints')
+    parser.add_argument('--noise-tag', type=str, default='', help='optional subdirectory name (e.g., gaussian)')
     return parser.parse_args()
 
 
