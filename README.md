@@ -75,8 +75,8 @@ If you want to see pred vs. GT on one certain picture, run `python eval_noise.py
 ## Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
 `python attack_model.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_salt_pepper.csv --noise-tag salt_pepper --save-dir attack_checkpoints`
 
-`python attack_eval.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_gaussian.csv --attack-ckpt attack_checkpoints/gaussian/Unet_epoch30.pth --landmark-ckpt checkpoints/resnet18/best_model.pth --extra-landmark-ckpt checkpoints/vit/best_model.pth --recon-vis-image 30_1_2_20170116173725888.jpg.chip.jpg --save-dir runs/attack_eval_gaussian`
-<img width="2400" height="800" alt="triplets" src="https://github.com/user-attachments/assets/ac0f946c-d346-43a4-81f0-28af099b43e7" />
+`python attack_eval.py --noise-mode gaussian`
+<img width="1796" height="1235" alt="Vis_salt_pepper_27_0_4_20170103235409988 jpg chip" src="https://github.com/user-attachments/assets/9c39cd59-10c4-4ef0-871a-b4b59777da7a" />
 
 
 # Contact
