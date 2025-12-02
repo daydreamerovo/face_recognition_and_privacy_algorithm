@@ -11,7 +11,7 @@ e.g., trained U-net, and so on. Easy for starters to get familiar with face reco
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Features](#features)
+- [Contact](#contact)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -46,7 +46,7 @@ Change those hyperparameters as you want, and here are some hints:
 
 **--radius**: Low-pass filter radius (unit: pixels); the smaller it is, the fewer frequencies are retained, and the image becomes blurrier.
 
-**--sigma**: Frequency-domain Gaussian multiplicative noise coefficient (used in Gauss mode); adjust between 0.2 to 1, the larger it is, the more intense the colour texture.
+**--sigma**: Frequency-domain Gaussian multiplicative noise coefficient (used in Gauss mode); adjust between 0.2 and 1, the larger it is, the more intense the colour texture.
 
 **--photon-lambda**: 'Photon count' λ for Poisson noise; the smaller it is, the stronger the noise. Default 40 corresponds to mild graininess, which  can be lowered to 10 or 5 to enhance the effect.
 
@@ -73,9 +73,9 @@ If you want to see pred vs. GT on one certain picture, run `python eval_noise.py
 
 
 ## Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
-`python attack_model.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_salt_pepper.csv --noise-tag salt_pepper --save-dir attack_checkpoints`
+You can train your Unet by running `python attack_model.py --clean-csv data/landmarks_dataset.csv --noisy-csv data/landmarks_dataset_salt_pepper.csv --noise-tag salt_pepper --save-dir attack_checkpoints`
 
-`python attack_eval.py --noise-mode gaussian`
+You can evaluate the performance of ResNet and ViT on the reconstructed images by running `python attack_eval.py --noise-mode gaussian`, and change the noise mode by `--noise-mode`. An example of ViT's predicted landmarks vs. GT labels is presented below:
 <img width="1796" height="1235" alt="Vis_salt_pepper_27_0_4_20170103235409988 jpg chip" src="https://github.com/user-attachments/assets/9c39cd59-10c4-4ef0-871a-b4b59777da7a" />
 
 
