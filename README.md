@@ -2,8 +2,7 @@
 
 # Face-Landmark Detection and Privacy-Preserving Implementation Using Pytorch
 This repo implements a five-landmark detection based on UKTFace (cropped, aligned), including nose, eyes, and mouth, with *Resnet18* and *ViT* as backbones for comparison,
-Both are fine-tuned using LoRA adapter, and the effect of adding noises (Gaussian, salt-pepper, Poisson) to images via FFT is discussed, followed by different methods to "Attack" the model. 
-e.g., trained U-net, and so on. Easy for starters to get familiar with face recognition algorithms and implementations. The goal is to prevent attackers from stealing directly and easily from noisy images but quite recognisable to human eyes.
+Both are fine-tuned using LoRA adapter, and the effect of adding noises (Gaussian, salt-pepper, Poisson) to images via FFT is discussed, followed by a restoration model to "Attack" the model. In this repo, I used a U-Net. Then the two baselines' performances are evaluated on the reconstructed images.  Easy for starters to get familiar with face recognition algorithms and implementations. The goal is to prevent attackers from stealing directly and easily from noisy images but quite recognisable to human eyes.
 
 
 ## Table of Contents
@@ -19,7 +18,7 @@ e.g., trained U-net, and so on. Easy for starters to get familiar with face reco
 # Getting Started
 Download this repo using `gh repo clone daydreamerovo/face_recognition_and_privacy_perserving` or download as a zip file. Original annotated images are done using **dlib** and using **shape_predictor_68_face_landmarks.dat** in the models file.
 
-## Get Your Baseline
+## Get Your Baseline of Two Models on detecting 5-point Landmarks
 Run `python train.py --backbone vit --epochs 30 --batch_size 32 --lr 1e-4 --use_lora --lora_r 8 --lora_alpha 16 --lora_dropout 0.05` in the terminal to get a baseline for face detection, the best result's weight will be stored in the checkpoints file. If you want to change the backbone for training, simply use `--backbone vit` or `--backbone resnet`. The default backbone model is Resnet18. My baseline for two models is stored in checkpoints.
 
 If you don't want to use lora: `python train.py --backbone vit --epochs 30 --batch_size 32 --lr 1e-4`.
@@ -69,7 +68,7 @@ Change evaluation on a different noise mode: change meta-path into  `data/landma
 An example of tests run using ViT:
 <img width="1600" height="511" alt="compare" src="https://github.com/user-attachments/assets/18daf5e5-7579-46a6-9e01-7020903a164b" />
 
-If you want to see pred vs. GT on one certain picture, run `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --preview-image 35_0_0_20170117170519707.jpg.chip.jpg --preview-metas data/landmarks_dataset_gaussian.csv data/landmarks_dataset_salt_pepper.csv data/landmarks_dataset_poisson.csv  --preview-only`
+If you want to see pred vs. GT on one certain picture, run `python eval_noise.py --meta-path data/landmarks_dataset.csv --checkpoint checkpoints/vit/best_model.pth --backbone vit --preview-image 35_0_0_20170117170519707.jpg.chip.jpg --preview-metas data/landmarks_dataset_gaussian.csv data/landmarks_dataset_salt_pepper.csv data/landmarks_dataset_poisson.csv  --preview-only`. You can browse through the UTKFace dataset to select an image you want to display, and replace the image name in the command provided.
 
 
 ## Train an Encoder-Decoder Net: Unet to reconstruct clean images from noisy images:
